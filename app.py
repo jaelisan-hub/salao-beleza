@@ -24,7 +24,7 @@ def home():
     return render_template("index.html")
 
 
-# ================= LOGIN (CORRIGIDO) =================
+# ================= LOGIN =================
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -41,6 +41,12 @@ def login():
         return "Login inválido"
 
     return render_template("login.html")
+
+
+# ================= TESTE USERS (AQUI ESTÁ O LUGAR CERTO) =================
+@app.route("/users")
+def users():
+    return str(Usuario.query.all())
 
 
 # ================= LOGOUT =================
