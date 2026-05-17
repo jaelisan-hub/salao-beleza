@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
+
 {% block conteudo %}
 
-<h1>💄 Sistema Salão de Beleza</h1>
+<h1>Sistema Salão de Beleza</h1>
 
-<a class="btn btn-primary" href="/clientes">Clientes</a>
-<a class="btn btn-success" href="/agendamentos">Agendamentos</a>
+<p>Escolha uma opção:</p>
+
+<a href="/login" class="btn btn-primary mb-2">Login</a>
+
+<a href="/cadastro" class="btn btn-success mb-2">Cadastro</a>
 
 {% endblock %}
