@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro</title>
+</head>
+<body>
+    <h1>Cadastro de Usuário</h1>
+
+    <input id="nome" placeholder="Nome">
+    <input id="email" placeholder="Email">
+    <input id="senha" placeholder="Senha" type="password">
+
+    <button onclick="cadastrar()">Cadastrar</button>
+
+    <script>
+        function cadastrar() {
+            fetch("/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: document.getElementById("nome").value,
+                    email: document.getElementById("email").value,
+                    senha: document.getElementById("senha").value
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.msg);
+            })
+            .catch(err => {
+                alert("Erro ao cadastrar");
+                console.log(err);
+            });
+        }
+    </script>
+
+</body>
+</html>

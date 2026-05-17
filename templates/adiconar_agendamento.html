@@ -1,40 +1,21 @@
 {% extends 'base.html' %}
-
 {% block conteudo %}
 
 <h2>Novo Agendamento</h2>
 
 <form method="POST">
 
-    <input
-        type="text"
-        name="cliente"
-        placeholder="Cliente"
-        class="form-control mb-3"
-    >
+    <select name="cliente_id" class="form-control mb-2">
+        {% for c in clientes %}
+            <option value="{{ c.id }}">{{ c.nome }}</option>
+        {% endfor %}
+    </select>
 
-    <input
-        type="text"
-        name="servico"
-        placeholder="Serviço"
-        class="form-control mb-3"
-    >
+    <input name="servico" class="form-control mb-2" placeholder="Serviço">
+    <input type="date" name="data" class="form-control mb-2">
+    <input type="time" name="hora" class="form-control mb-2">
 
-    <input
-        type="date"
-        name="data"
-        class="form-control mb-3"
-    >
-
-    <input
-        type="time"
-        name="horario"
-        class="form-control mb-3"
-    >
-
-    <button class="btn btn-primary">
-        Salvar
-    </button>
+    <button class="btn btn-primary">Salvar</button>
 
 </form>
 

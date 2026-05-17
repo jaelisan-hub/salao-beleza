@@ -1,5 +1,9 @@
-<h1>Sistema funcionando</h1>
+{% extends 'base.html' %}
+{% block conteudo %}
 
-<a href="/clientes">
-    Clientes
-</a>
+<h1>💄 Sistema Salão de Beleza</h1>
+
+<a class="btn btn-primary" href="/clientes">Clientes</a>
+<a class="btn btn-success" href="/agendamentos">Agendamentos</a>
+
+{% endblock %}

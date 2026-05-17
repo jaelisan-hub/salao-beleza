@@ -1,13 +1,14 @@
-<h1>Clientes</h1>
+{% extends 'base.html' %}
+{% block conteudo %}
 
-<a href="/adicionar_cliente">
-    Novo Cliente
-</a>
+<h2>Clientes</h2>
 
-{% for cliente in clientes %}
+<a class="btn btn-success mb-3" href="/adicionar_cliente">Novo Cliente</a>
 
-<p>
-    {{ cliente.nome }}
-</p>
-
+{% for c in clientes %}
+<div class="card p-2 mb-2">
+    <b>{{ c.nome }}</b> - {{ c.telefone }}
+</div>
 {% endfor %}
+
+{% endblock %}

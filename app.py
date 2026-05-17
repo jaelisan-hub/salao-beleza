@@ -1,114 +1,126 @@
-from flask import Flask, render_template, request, redirect, session
-from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
 import os
+from flask import Flask, request, render_template, redirect, session
+from dotenv import load_dotenv
+
+from models import db, Usuario, Cliente, Agendamento
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = "chave_super_secreta_salao_2026"
 
-app.secret_key = 'salao_secret'
+# ================= BANCO =================
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "connect_args": {"sslmode": "require"}
+}
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+db.init_app(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# ================= HOME =================
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-db = SQLAlchemy(app)
 
-# =========================
-# TABELAS
-# =========================
+# ================= LOGIN (CORRIGIDO) =================
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        senha = request.form["senha"]
 
-class Cliente(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100))
-    telefone = db.Column(db.String(30))
+        user = Usuario.query.filter_by(email=email, senha=senha).first()
 
-class Agendamento(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    cliente = db.Column(db.String(100))
-    servico = db.Column(db.String(100))
-    data = db.Column(db.String(30))
-    horario = db.Column(db.String(20))
+        if user:
+            session["user_id"] = user.id
+            session["user_email"] = user.email
+            return redirect("/clientes")
 
-# =========================
-# ROTAS
-# =========================
+        return "Login inválido"
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+    return render_template("login.html")
 
-# CLIENTES
 
-@app.route('/clientes')
+# ================= LOGOUT =================
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
+
+# ================= CLIENTES =================
+@app.route("/clientes")
 def clientes():
-    lista_clientes = Cliente.query.all()
-    return render_template('clientes.html', clientes=lista_clientes)
+    if "user_id" not in session:
+        return redirect("/login")
 
-@app.route('/adicionar_cliente', methods=['GET', 'POST'])
+    return render_template(
+        "clientes.html",
+        clientes=Cliente.query.all()
+    )
+
+
+@app.route("/adicionar_cliente", methods=["GET", "POST"])
 def adicionar_cliente():
+    if "user_id" not in session:
+        return redirect("/login")
 
-    if request.method == 'POST':
-
-        nome = request.form['nome']
-        telefone = request.form['telefone']
-
+    if request.method == "POST":
         novo = Cliente(
-            nome=nome,
-            telefone=telefone
+            nome=request.form["nome"],
+            telefone=request.form["telefone"]
         )
-
         db.session.add(novo)
         db.session.commit()
+        return redirect("/clientes")
 
-        return redirect('/clientes')
+    return render_template("adicionar_cliente.html")
 
-    return render_template('adicionar_cliente.html')
 
-# AGENDAMENTOS
-
-@app.route('/agendamentos')
+# ================= AGENDAMENTOS =================
+@app.route("/agendamentos")
 def agendamentos():
-
-    lista = Agendamento.query.all()
+    if "user_id" not in session:
+        return redirect("/login")
 
     return render_template(
-        'agendamentos.html',
-        agendamentos=lista
+        "agendamentos.html",
+        agendamentos=Agendamento.query.all()
     )
 
-@app.route('/adicionar_agendamento', methods=['GET', 'POST'])
+
+@app.route("/adicionar_agendamento", methods=["GET", "POST"])
 def adicionar_agendamento():
+    if "user_id" not in session:
+        return redirect("/login")
 
-    if request.method == 'POST':
-
-        cliente = request.form['cliente']
-        servico = request.form['servico']
-        data = request.form['data']
-        horario = request.form['horario']
-
+    if request.method == "POST":
         novo = Agendamento(
-            cliente=cliente,
-            servico=servico,
-            data=data,
-            horario=horario
+            cliente_id=request.form["cliente_id"],
+            servico=request.form["servico"],
+            data=request.form["data"],
+            hora=request.form["hora"]
         )
-
         db.session.add(novo)
         db.session.commit()
-
-        return redirect('/agendamentos')
+        return redirect("/agendamentos")
 
     return render_template(
-        'adicionar_agendamento.html'
+        "adicionar_agendamento.html",
+        clientes=Cliente.query.all()
     )
 
-# =========================
 
-if __name__ == '__main__':
+# ================= INIT =================
+@app.route("/init")
+def init():
     with app.app_context():
         db.create_all()
+    return "Banco criado"
 
+
+# ================= RUN =================
+if __name__ == "__main__":
     app.run(debug=True)
