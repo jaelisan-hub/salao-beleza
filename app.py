@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, redirect, session
+from flask import Flask, request, render_template, redirect, session, url_for
 from dotenv import load_dotenv
 
 from models import db, Usuario, Cliente, Agendamento
@@ -28,22 +28,45 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        email = request.form["email"]
-        senha = request.form["senha"]
+        email = request.form["email"].strip()
+        senha = request.form["senha"].strip()
 
         user = Usuario.query.filter_by(email=email, senha=senha).first()
 
         if user:
             session["user_id"] = user.id
             session["user_email"] = user.email
-            return redirect("/clientes")
+            return redirect(url_for("clientes"))
 
         return "Login inválido"
 
     return render_template("login.html")
 
 
-# ================= CRIAR USUÁRIO (TESTE) =================
+# ================= CADASTRO =================
+@app.route("/cadastro", methods=["GET", "POST"])
+def cadastro():
+    if request.method == "POST":
+        email = request.form["email"].strip()
+        senha = request.form["senha"].strip()
+
+        if not email or not senha:
+            return "Preencha todos os campos"
+
+        existe = Usuario.query.filter_by(email=email).first()
+        if existe:
+            return "Usuário já existe"
+
+        novo = Usuario(email=email, senha=senha)
+        db.session.add(novo)
+        db.session.commit()
+
+        return redirect(url_for("login"))
+
+    return render_template("cadastro.html")
+
+
+# ================= USUÁRIO TESTE =================
 @app.route("/criar-user")
 def criar_user():
     user = Usuario(email="admin@admin.com", senha="123")
@@ -52,7 +75,7 @@ def criar_user():
     return "Usuário criado com sucesso!"
 
 
-# ================= TESTE USERS =================
+# ================= DEBUG USERS =================
 @app.route("/users")
 def users():
     return str(Usuario.query.all())
@@ -62,14 +85,14 @@ def users():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect("/login")
+    return redirect(url_for("login"))
 
 
 # ================= CLIENTES =================
 @app.route("/clientes")
 def clientes():
     if "user_id" not in session:
-        return redirect("/login")
+        return redirect(url_for("login"))
 
     return render_template(
         "clientes.html",
@@ -80,7 +103,7 @@ def clientes():
 @app.route("/adicionar_cliente", methods=["GET", "POST"])
 def adicionar_cliente():
     if "user_id" not in session:
-        return redirect("/login")
+        return redirect(url_for("login"))
 
     if request.method == "POST":
         novo = Cliente(
@@ -89,7 +112,7 @@ def adicionar_cliente():
         )
         db.session.add(novo)
         db.session.commit()
-        return redirect("/clientes")
+        return redirect(url_for("clientes"))
 
     return render_template("adicionar_cliente.html")
 
@@ -98,7 +121,7 @@ def adicionar_cliente():
 @app.route("/agendamentos")
 def agendamentos():
     if "user_id" not in session:
-        return redirect("/login")
+        return redirect(url_for("login"))
 
     return render_template(
         "agendamentos.html",
@@ -109,7 +132,7 @@ def agendamentos():
 @app.route("/adicionar_agendamento", methods=["GET", "POST"])
 def adicionar_agendamento():
     if "user_id" not in session:
-        return redirect("/login")
+        return redirect(url_for("login"))
 
     if request.method == "POST":
         novo = Agendamento(
@@ -120,7 +143,7 @@ def adicionar_agendamento():
         )
         db.session.add(novo)
         db.session.commit()
-        return redirect("/agendamentos")
+        return redirect(url_for("agendamentos"))
 
     return render_template(
         "adicionar_agendamento.html",
