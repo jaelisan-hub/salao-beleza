@@ -43,7 +43,16 @@ def login():
     return render_template("login.html")
 
 
-# ================= TESTE USERS (AQUI ESTÁ O LUGAR CERTO) =================
+# ================= CRIAR USUÁRIO (TESTE) =================
+@app.route("/criar-user")
+def criar_user():
+    user = Usuario(email="admin@admin.com", senha="123")
+    db.session.add(user)
+    db.session.commit()
+    return "Usuário criado com sucesso!"
+
+
+# ================= TESTE USERS =================
 @app.route("/users")
 def users():
     return str(Usuario.query.all())
