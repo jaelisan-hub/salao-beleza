@@ -1,0 +1,13 @@
+<h1>Clientes</h1>
+
+<a href="/adicionar_cliente">
+    Novo Cliente
+</a>
+
+{% for cliente in clientes %}
+
+<p>
+    {{ cliente.nome }}
+</p>
+
+{% endfor %}

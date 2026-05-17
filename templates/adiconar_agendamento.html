@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+
+<h2>Novo Agendamento</h2>
+
+<form method="POST">
+
+    <input
+        type="text"
+        name="cliente"
+        placeholder="Cliente"
+        class="form-control mb-3"
+    >
+
+    <input
+        type="text"
+        name="servico"
+        placeholder="Serviço"
+        class="form-control mb-3"
+    >
+
+    <input
+        type="date"
+        name="data"
+        class="form-control mb-3"
+    >
+
+    <input
+        type="time"
+        name="horario"
+        class="form-control mb-3"
+    >
+
+    <button class="btn btn-primary">
+        Salvar
+    </button>
+
+</form>
+
+{% endblock %}
