@@ -118,7 +118,8 @@ def adicionar_cliente():
 
 
 # ================= AGENDAMENTOS =================
-@app.route("/agendamentos")
+# ================= AGENDAMENTOS =================
+@app.route("/agendamentos", methods=["GET", "POST"])
 def agendamentos():
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -127,7 +128,6 @@ def agendamentos():
         "agendamentos.html",
         agendamentos=Agendamento.query.all()
     )
-
 
 @app.route("/adicionar_agendamento", methods=["GET", "POST"])
 def adicionar_agendamento():
