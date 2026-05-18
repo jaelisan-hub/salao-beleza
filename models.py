@@ -27,14 +27,11 @@ class Agendamento(db.Model):
 
     cliente_id = db.Column(
         db.Integer,
-        db.ForeignKey("cliente.id")
+        db.ForeignKey('cliente.id')
     )
 
     servico = db.Column(db.String(100))
-    data = db.Column(db.String(20))
-    hora = db.Column(db.String(20))
+    data = db.Column(db.String(50))
+    hora = db.Column(db.String(50))
 
-    usuario_id = db.Column(
-        db.Integer,
-        db.ForeignKey("usuario.id")
-    )
+    cliente = db.relationship('Cliente')
