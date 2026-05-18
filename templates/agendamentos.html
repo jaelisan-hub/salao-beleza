@@ -1,17 +1,17 @@
-<h2>Agendamentos</h2>
+<form method="POST">
 
-<a class="btn btn-success mb-3" href="/adicionar_agendamento">
-    Novo Agendamento
-</a>
+    <select name="cliente_id" class="form-control mb-2">
+        {% for c in clientes %}
+            <option value="{{ c.id }}">{{ c.nome }}</option>
+        {% endfor %}
+    </select>
 
-{% for a in agendamentos %}
-<div class="card p-2 mb-2">
+    <input name="servico" class="form-control mb-2" placeholder="Serviço">
 
-    <b>Cliente:</b> {{ a.cliente.nome }} <br>
-    <b>Serviço:</b> {{ a.servico }} <br>
-    <b>Data:</b> {{ a.data }} - {{ a.hora }}
+    <input type="date" name="data" class="form-control mb-2">
 
-</div>
-{% endfor %}
+    <input type="time" name="hora" class="form-control mb-2">
 
-{% endblock %}
+    <button class="btn btn-primary">Salvar</button>
+
+</form>
