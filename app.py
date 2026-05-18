@@ -178,15 +178,19 @@ def adicionar_cliente():
 
 
 # ================= AGENDAMENTOS =================
+
+
+# ================= EXCLUIR AGENDAMENTO =================
+
+
+    # ================= AGENDAMENTOS =================
 @app.route("/agendamentos")
 def agendamentos():
 
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    agendamentos = Agendamento.query.filter_by(
-        usuario_id=session["user_id"]
-    ).all()
+    agendamentos = Agendamento.query.all()
 
     return render_template(
         "agendamentos.html",
@@ -224,8 +228,7 @@ def adicionar_agendamento():
             cliente_id=request.form["cliente_id"],
             servico=request.form["servico"],
             data=request.form["data"],
-            hora=request.form["hora"],
-            usuario_id=session["user_id"]
+            hora=request.form["hora"]
         )
 
         db.session.add(novo)
