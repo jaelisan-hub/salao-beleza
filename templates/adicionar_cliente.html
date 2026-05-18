@@ -1,14 +1,14 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
 {% block conteudo %}
 
-<h2>Novo Cliente</h2>
+<h2>Adicionar Cliente</h2>
 
 <form method="POST">
-
-    <input name="nome" class="form-control mb-2" placeholder="Nome">
-    <input name="telefone" class="form-control mb-2" placeholder="Telefone">
-
-    <button class="btn btn-primary">Salvar</button>
-
+    <input type="text" name="nome" placeholder="Nome" required>
+    <input type="text" name="telefone" placeholder="Telefone" required>
+    <button type="submit">Salvar</button>
 </form>
+
+{% endblock %}
 
