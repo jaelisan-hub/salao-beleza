@@ -158,11 +158,7 @@ def init():
         db.create_all()
     return "Banco criado"
 
-@app.route("/resetar")
-def resetar():
-    db.drop_all()
-    db.create_all()
-    return "Banco resetado!"
+
 # ================= RUN =================
 if __name__ == "__main__":
     app.run(debug=True)
