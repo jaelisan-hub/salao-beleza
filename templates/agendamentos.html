@@ -1,17 +1,33 @@
-<form action="/agendamentos" method="GET"></form>
+{% extends 'base.html' %}
 
-    <select name="cliente_id" class="form-control mb-2">
-        {% for c in clientes %}
-            <option value="{{ c.id }}">{{ c.nome }}</option>
-        {% endfor %}
-    </select>
+{% block conteudo %}
 
-    <input name="servico" class="form-control mb-2" placeholder="Serviço">
+<h2>Agendamentos</h2>
 
-    <input type="date" name="data" class="form-control mb-2">
+<a href="/adicionar_agendamento" class="btn btn-success mb-3">
+    Novo Agendamento
+</a>
 
-    <input type="time" name="hora" class="form-control mb-2">
+<table class="table table-bordered">
 
-    <button class="btn btn-primary">Salvar</button>
+    <tr>
+        <th>Cliente</th>
+        <th>Serviço</th>
+        <th>Data</th>
+        <th>Hora</th>
+    </tr>
 
-</form>
+    {% for a in agendamentos %}
+
+    <tr>
+        <td>{{ a.cliente_id }}</td>
+        <td>{{ a.servico }}</td>
+        <td>{{ a.data }}</td>
+        <td>{{ a.hora }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}
