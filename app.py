@@ -108,7 +108,16 @@ def excluir_cliente(id):
     cliente = Cliente.query.get(id)
 
     if cliente:
+
+        agendamentos = Agendamento.query.filter_by(
+            cliente_id=id
+        ).all()
+
+        for a in agendamentos:
+            db.session.delete(a)
+
         db.session.delete(cliente)
+
         db.session.commit()
 
     return redirect(url_for("clientes"))
