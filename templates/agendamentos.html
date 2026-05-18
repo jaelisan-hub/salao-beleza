@@ -15,15 +15,30 @@
         <th>Serviço</th>
         <th>Data</th>
         <th>Hora</th>
+        <th>Ações</th>
     </tr>
 
     {% for a in agendamentos %}
 
     <tr>
+
         <td>{{ a.cliente_id }}</td>
+
         <td>{{ a.servico }}</td>
+
         <td>{{ a.data }}</td>
+
         <td>{{ a.hora }}</td>
+
+        <td>
+
+            <a href="/excluir_agendamento/{{ a.id }}"
+               class="btn btn-danger btn-sm">
+               Excluir
+            </a>
+
+        </td>
+
     </tr>
 
     {% endfor %}

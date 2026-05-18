@@ -6,9 +6,22 @@
 <a class="btn btn-success mb-3" href="/adicionar_cliente">Novo Cliente</a>
 
 {% for c in clientes %}
-<div class="card p-2 mb-2">
-    <b>{{ c.nome }}</b> - {{ c.telefone }}
-</div>
-{% endfor %}
 
-{% endblock %}
+<div class="card p-2 mb-2 d-flex flex-row justify-content-between align-items-center">
+
+    <div>
+        <b>{{ c.nome }}</b> - {{ c.telefone }}
+    </div>
+
+    <div>
+
+        <a href="/excluir_cliente/{{ c.id }}"
+           class="btn btn-danger btn-sm">
+           Excluir
+        </a>
+
+    </div>
+
+</div>
+
+{% endfor %}

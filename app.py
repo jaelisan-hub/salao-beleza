@@ -99,6 +99,20 @@ def clientes():
         clientes=Cliente.query.all()
     )
 
+@app.route("/excluir_cliente/<int:id>")
+def excluir_cliente(id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    cliente = Cliente.query.get(id)
+
+    if cliente:
+        db.session.delete(cliente)
+        db.session.commit()
+
+    return redirect(url_for("clientes"))
+
 
 @app.route("/adicionar_cliente", methods=["GET", "POST"])
 def adicionar_cliente():
@@ -128,6 +142,20 @@ def agendamentos():
         "agendamentos.html",
         agendamentos=Agendamento.query.all()
     )
+
+@app.route("/excluir_agendamento/<int:id>")
+def excluir_agendamento(id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    agendamento = Agendamento.query.get(id)
+
+    if agendamento:
+        db.session.delete(agendamento)
+        db.session.commit()
+
+    return redirect(url_for("agendamentos"))
 
 @app.route("/adicionar_agendamento", methods=["GET", "POST"])
 def adicionar_agendamento():
