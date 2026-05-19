@@ -1,9 +1,11 @@
-from flask_sqlalchemy import SQLAlchemy
+ffrom flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
 
 class Usuario(db.Model):
+    __tablename__ = "usuario"
+
     id = db.Column(db.Integer, primary_key=True)
 
     email = db.Column(db.String(100), unique=True)
@@ -11,6 +13,8 @@ class Usuario(db.Model):
 
 
 class Cliente(db.Model):
+    __tablename__ = "cliente"
+
     id = db.Column(db.Integer, primary_key=True)
 
     nome = db.Column(db.String(100))
@@ -23,15 +27,21 @@ class Cliente(db.Model):
 
 
 class Agendamento(db.Model):
+    __tablename__ = "agendamento"
+
     id = db.Column(db.Integer, primary_key=True)
 
     cliente_id = db.Column(
         db.Integer,
-        db.ForeignKey('cliente.id')
+        db.ForeignKey("cliente.id")
     )
 
     servico = db.Column(db.String(100))
     data = db.Column(db.String(50))
     hora = db.Column(db.String(50))
+    pagamento = db.Column(db.String(50))
 
-    cliente = db.relationship('Cliente')
+    cliente = db.relationship(
+        "Cliente",
+        backref="agendamentos"
+    )

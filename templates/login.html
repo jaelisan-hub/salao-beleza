@@ -6,29 +6,50 @@
 
 <form method="POST">
 
-    <input name="email" class="form-control mb-2" placeholder="Email">
+    <input
+        name="email"
+        class="form-control mb-2"
+        placeholder="Email"
+    >
 
-    <input name="senha" type="password" class="form-control mb-2" placeholder="Senha">
+    <input
+        name="senha"
+        type="password"
+        class="form-control mb-2"
+        placeholder="Senha"
+    >
 
-    <button class="btn btn-primary">Entrar</button>
+    <button class="btn btn-primary w-100">
+        Entrar
+    </button>
 
 </form>
 
-<div class="card p-4 mt-4">
+<div class="card p-4 mt-4 shadow-sm">
 
     <h3>Plano do Sistema</h3>
 
     <p>
         Use o sistema completo de salão de beleza
-        por apenas R$ 29,90/mês.
+        por apenas <strong>R$ 29,90/mês</strong>.
     </p>
 
     <a
         href="https://wa.me/5531972150654?text=Olá,%20quero%20assinar%20o%20sistema%20de%20salão"
-        class="btn btn-success"
+        class="btn btn-success w-100 mb-2"
         target="_blank"
     >
         Assinar pelo WhatsApp
     </a>
 
+    <a
+        href="https://wa.me/5531972150654?text=Olá,%20quero%20informações%20sobre%20pagamento"
+        class="btn btn-outline-success w-100"
+        target="_blank"
+    >
+        Pagamento via WhatsApp
+    </a>
+
 </div>
+
+{% endblock %}

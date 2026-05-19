@@ -23,6 +23,7 @@ db.init_app(app)
 def home():
     return render_template("index.html")
 
+
 @app.route("/plano")
 def plano():
     return render_template("plano.html")
@@ -90,6 +91,13 @@ def cadastro():
 @app.route("/criar-user")
 def criar_user():
 
+    existe = Usuario.query.filter_by(
+        email="admin@admin.com"
+    ).first()
+
+    if existe:
+        return "Usuário já existe"
+
     user = Usuario(
         email="admin@admin.com",
         senha="123"
@@ -104,7 +112,15 @@ def criar_user():
 # ================= DEBUG USERS =================
 @app.route("/users")
 def users():
-    return str(Usuario.query.all())
+
+    usuarios = Usuario.query.all()
+
+    lista = []
+
+    for u in usuarios:
+        lista.append(f"{u.id} - {u.email}")
+
+    return "<br>".join(lista)
 
 
 # ================= LOGOUT =================
@@ -133,6 +149,29 @@ def clientes():
     )
 
 
+# ================= ADICIONAR CLIENTE =================
+@app.route("/adicionar_cliente", methods=["GET", "POST"])
+def adicionar_cliente():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        novo = Cliente(
+            nome=request.form["nome"],
+            telefone=request.form["telefone"],
+            usuario_id=session["user_id"]
+        )
+
+        db.session.add(novo)
+        db.session.commit()
+
+        return redirect(url_for("clientes"))
+
+    return render_template("adicionar_cliente.html")
+
+
 # ================= EXCLUIR CLIENTE =================
 @app.route("/excluir_cliente/<int:id>")
 def excluir_cliente(id):
@@ -158,47 +197,58 @@ def excluir_cliente(id):
     return redirect(url_for("clientes"))
 
 
-# ================= ADICIONAR CLIENTE =================
-@app.route("/adicionar_cliente", methods=["GET", "POST"])
-def adicionar_cliente():
-
-    if "user_id" not in session:
-        return redirect(url_for("login"))
-
-    if request.method == "POST":
-
-        novo = Cliente(
-            nome=request.form["nome"],
-            telefone=request.form["telefone"],
-            usuario_id=session["user_id"]
-        )
-
-        db.session.add(novo)
-        db.session.commit()
-
-        return redirect(url_for("clientes"))
-
-    return render_template("adicionar_cliente.html")
-
-
 # ================= AGENDAMENTOS =================
-
-
-# ================= EXCLUIR AGENDAMENTO =================
-
-
-    # ================= AGENDAMENTOS =================
 @app.route("/agendamentos")
 def agendamentos():
 
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    agendamentos = Agendamento.query.all()
+    clientes_usuario = Cliente.query.filter_by(
+        usuario_id=session["user_id"]
+    ).all()
+
+    ids_clientes = [c.id for c in clientes_usuario]
+
+    agendamentos = Agendamento.query.filter(
+        Agendamento.cliente_id.in_(ids_clientes)
+    ).all()
 
     return render_template(
         "agendamentos.html",
         agendamentos=agendamentos
+    )
+
+
+# ================= ADICIONAR AGENDAMENTO =================
+@app.route("/adicionar_agendamento", methods=["GET", "POST"])
+def adicionar_agendamento():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    clientes = Cliente.query.filter_by(
+        usuario_id=session["user_id"]
+    ).all()
+
+    if request.method == "POST":
+
+        novo = Agendamento(
+            cliente_id=request.form["cliente_id"],
+            servico=request.form["servico"],
+            data=request.form["data"],
+            hora=request.form["hora"],
+            pagamento=request.form["pagamento"]
+        )
+
+        db.session.add(novo)
+        db.session.commit()
+
+        return redirect(url_for("agendamentos"))
+
+    return render_template(
+        "adicionar_agendamento.html",
+        clientes=clientes
     )
 
 
@@ -219,37 +269,6 @@ def excluir_agendamento(id):
     return redirect(url_for("agendamentos"))
 
 
-# ================= ADICIONAR AGENDAMENTO =================
-@app.route("/adicionar_agendamento", methods=["GET", "POST"])
-def adicionar_agendamento():
-
-    if "user_id" not in session:
-        return redirect(url_for("login"))
-
-    if request.method == "POST":
-
-        novo = Agendamento(
-            cliente_id=request.form["cliente_id"],
-            servico=request.form["servico"],
-            data=request.form["data"],
-            hora=request.form["hora"]
-        )
-
-        db.session.add(novo)
-        db.session.commit()
-
-        return redirect(url_for("agendamentos"))
-
-    clientes = Cliente.query.filter_by(
-        usuario_id=session["user_id"]
-    ).all()
-
-    return render_template(
-        "adicionar_agendamento.html",
-        clientes=clientes
-    )
-
-
 # ================= INIT =================
 @app.route("/init")
 def init():
@@ -257,7 +276,7 @@ def init():
     with app.app_context():
         db.create_all()
 
-    return "Banco criado"
+    return "Banco criado!"
 
 
 # ================= RESETAR =================
@@ -267,7 +286,6 @@ def resetar():
     with app.app_context():
 
         db.drop_all()
-
         db.create_all()
 
     return "Banco resetado!"

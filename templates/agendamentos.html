@@ -8,53 +8,72 @@
     Novo Agendamento
 </a>
 
-<table class="table table-bordered">
+<table class="table table-bordered table-striped">
 
-    <tr>
-        <th>Cliente</th>
-        <th>Serviço</th>
-        <th>Data</th>
-        <th>Hora</th>
-        <th>Pagamento</th>
-        <th>Ações</th>
-    </tr>
+    <thead>
 
-    {% for a in agendamentos %}
+        <tr>
+            <th>Cliente</th>
+            <th>Serviço</th>
+            <th>Data</th>
+            <th>Hora</th>
+            <th>Pagamento</th>
+            <th>Ações</th>
+        </tr>
 
-    <tr>
+    </thead>
 
-        <td>{{ a.cliente.nome }}</td>
+    <tbody>
 
-        <td>{{ a.servico }}</td>
+        {% for a in agendamentos %}
 
-        <td>{{ a.data }}</td>
+        <tr>
 
-        <td>{{ a.hora }}</td>
+            <td>
+                {{ a.cliente.nome if a.cliente else 'Cliente não encontrado' }}
+            </td>
 
-        <td>
+            <td>
+                {{ a.servico }}
+            </td>
 
-            <a target="_blank"
-               href="https://wa.me/5531972150654?text=Olá%20{{ a.cliente.nome }},%20segue%20o%20pagamento%20do%20serviço%20{{ a.servico }}.%20PIX:%203069dcae-baea-43ac-9291-328989b4144b"
-               class="btn btn-success btn-sm">
+            <td>
+                {{ a.data }}
+            </td>
 
-               Cobrar
+            <td>
+                {{ a.hora }}
+            </td>
 
-            </a>
+            <td>
 
-        </td>
+                <a
+                    target="_blank"
+                    href="https://wa.me/5531972150654?text=Olá%20{{ a.cliente.nome if a.cliente else '' }},%20segue%20o%20pagamento%20do%20serviço%20{{ a.servico }}.%20PIX:%203069dcae-baea-43ac-9291-328989b4144b"
+                    class="btn btn-success btn-sm"
+                >
+                    Cobrar
+                </a>
 
-        <td>
+            </td>
 
-            <a href="/excluir_agendamento/{{ a.id }}"
-               class="btn btn-danger btn-sm">
-               Excluir
-            </a>
+            <td>
 
-        </td>
+                <a
+                    href="/excluir_agendamento/{{ a.id }}"
+                    class="btn btn-danger btn-sm"
+                    onclick="return confirm('Deseja excluir este agendamento?')"
+                >
+                    Excluir
+                </a>
 
-    </tr>
+            </td>
 
-    {% endfor %}
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
 
 </table>
 
