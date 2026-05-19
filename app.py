@@ -23,6 +23,10 @@ db.init_app(app)
 def home():
     return render_template("index.html")
 
+@app.route("/plano")
+def plano():
+    return render_template("plano.html")
+
 
 # ================= LOGIN =================
 @app.route("/login", methods=["GET", "POST"])
